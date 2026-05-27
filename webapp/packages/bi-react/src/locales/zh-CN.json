@@ -1,0 +1,105 @@
+{
+  "app": {
+    "title": "智数报表",
+    "subtitle": "AI驱动的智能数据分析平台",
+    "login": "登录",
+    "register": "立即注册",
+    "username": "用户名",
+    "password": "密码",
+    "rememberMe": "记住我",
+    "otherLoginMethods": "其他登录方式",
+    "noAccount": "还没有账号?",
+    "loginSuccess": "登录成功",
+    "copyright": "© 2026 智数报表. 保留所有权利.",
+    "tenantSelection": "请选择租户",
+    "forgotPassword": "忘记密码?"
+  },
+  "menu": {
+    "home": "首页",
+    "login": "登录",
+    "app": "应用",
+    "dashboard": "仪表盘",
+    "about": "关于",
+    "example": "示例页面",
+    "tenant": "租户管理",
+    "permission": "权限管理",
+    "user": "用户管理",
+    "role": "角色管理",
+    "data": "数据管理",
+    "datasource": "数据源管理",
+    "dataset": "数据集管理",
+    "appManage": "应用管理",
+    "page": "页面管理",
+    "system": "系统管理",
+    "setting": "系统设置",
+    "tenantSetting": "租户设置",
+    "iconManage": "图标管理",
+    "skill": "技能管理",
+    "secret": "密钥管理",
+    "model": "模型管理",
+    "dict": "字典管理",
+    "page-template": "页面模板管理",
+    "page-example": "页面示例管理"
+  },
+  "common": {
+    "confirm": "确定",
+    "cancel": "取消",
+    "save": "保存",
+    "saveSuccess": "保存成功",
+    "uploadSuccess": "上传成功",
+    "required": "请输入"
+  },
+  "account": {
+    "center": "个人中心",
+    "settings": "系统设置",
+    "logout": "退出登录",
+    "logoutConfirm": "确定要退出登录吗？",
+    "basicInfo": "基本信息",
+    "security": "安全设置",
+    "changeAvatar": "更换头像"
+  },
+  "user": {
+    "username": "用户名",
+    "displayName": "显示名称",
+    "oldPassword": "旧密码",
+    "newPassword": "新密码",
+    "confirmPassword": "确认密码",
+    "passwordMismatch": "密码不一致"
+  },
+  "setting": {
+    "title": "系统设置",
+    "theme": "主题",
+    "light": "浅色主题",
+    "dark": "深色主题",
+    "layout": "布局",
+    "side-menu": "侧边菜单",
+    "top-menu": "顶部菜单",
+    "top-side-menu": "复合菜单",
+    "language": "语言",
+    "zhCN": "简体中文",
+    "enUS": "English",
+    "multiTab": "多标签页"
+  },
+  "form": {
+    "required": "必填项",
+    "passwordConfirm": "确认密码",
+    "passwordMismatch": "两次输入的密码不一致",
+    "usernameRequired": "请输入用户名",
+    "passwordRequired": "请输入密码"
+  },
+  "errors": {
+    "403": {
+      "title": "403",
+      "subTitle": "抱歉，您无权访问该页面。"
+    },
+    "404": {
+      "title": "404",
+      "subTitle": "抱歉，您访问的页面不存在。"
+    },
+    "500": {
+      "title": "500",
+      "subTitle": "抱歉，服务器出错了。"
+    },
+    "backHome": "返回首页"
+  }
+}

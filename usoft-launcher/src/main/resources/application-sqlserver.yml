@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;databaseName=usoft_bi;encrypt=false
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    username: sa
+    password: YourStrong!Passw0rd
+  sql:
+    init:
+      mode: ${DB_INIT_MODE:always}
+      schema-locations: classpath:db/sqlserver/schema.sql
+      data-locations: classpath:db/sqlserver/data.sql
+

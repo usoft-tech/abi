@@ -1,0 +1,105 @@
+{
+  "app": {
+    "title": "Smart BI Vision",
+    "subtitle": "AI-Driven Intelligent Data Analysis Platform",
+    "login": "Login",
+    "register": "Register Now",
+    "username": "Username",
+    "password": "Password",
+    "rememberMe": "Remember Me",
+    "otherLoginMethods": "Other Login Methods",
+    "noAccount": "No account yet?",
+    "loginSuccess": "Login Successful",
+    "copyright": "© 2026 Smart BI Vision. All Rights Reserved.",
+    "tenantSelection": "Please select a tenant",
+    "forgotPassword": "Forgot Password?"
+  },
+  "menu": {
+    "home": "Home",
+    "login": "Login",
+    "app": "App",
+    "dashboard": "Dashboard",
+    "about": "About",
+    "example": "Example Page",
+    "tenant": "Tenant Management",
+    "permission": "Permission Management",
+    "user": "User Management",
+    "role": "Role Management",
+    "data": "Data Management",
+    "datasource": "Datasource Management",
+    "dataset": "Dataset Management",
+    "appManage": "App Management",
+    "page": "Page Management",
+    "system": "System Management",
+    "setting": "System Setting",
+    "tenantSetting": "Tenant Setting",
+    "iconManage": "Icon Management",
+    "skill": "Skill Management",
+    "secret": "Secret Management",
+    "model": "Model Management",
+    "dict": "Dictionary Management",
+    "page-template": "Page Template Management",
+    "page-example": "Page Example Management"
+  },
+  "common": {
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saveSuccess": "Saved successfully",
+    "uploadSuccess": "Uploaded successfully",
+    "required": "Please input"
+  },
+  "account": {
+    "center": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "logoutConfirm": "Are you sure you want to logout?",
+    "basicInfo": "Basic Info",
+    "security": "Security",
+    "changeAvatar": "Change Avatar"
+  },
+  "user": {
+    "username": "Username",
+    "displayName": "Display Name",
+    "oldPassword": "Old Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "passwordMismatch": "Passwords do not match"
+  },
+  "setting": {
+    "title": "System Settings",
+    "theme": "Theme",
+    "light": "Light Theme",
+    "dark": "Dark Theme",
+    "layout": "Layout",
+    "side-menu": "Side Menu",
+    "top-menu": "Top Menu",
+    "top-side-menu": "Composite Menu",
+    "language": "Language",
+    "zhCN": "Simplified Chinese",
+    "enUS": "English",
+    "multiTab": "Multi-Tab"
+  },
+  "form": {
+    "required": "Required Field",
+    "passwordConfirm": "Confirm Password",
+    "passwordMismatch": "Passwords do not match",
+    "usernameRequired": "Please enter a username",
+    "passwordRequired": "Please enter a password"
+  },
+  "errors": {
+    "403": {
+      "title": "403",
+      "subTitle": "Sorry, you are not authorized to access this page."
+    },
+    "404": {
+      "title": "404",
+      "subTitle": "Sorry, the page you visited does not exist."
+    },
+    "500": {
+      "title": "500",
+      "subTitle": "Sorry, something went wrong."
+    },
+    "backHome": "Back Home"
+  }
+}

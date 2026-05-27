@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:bi}?characterEncoding=UTF-8&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:root}
+  sql:
+    init:
+      mode: ${DB_INIT_MODE:always}
+      schema-locations: classpath:db/mysql/schema.sql,classpath:db/mysql/agentscope.sql
+      data-locations: classpath:db/mysql/data.sql
+

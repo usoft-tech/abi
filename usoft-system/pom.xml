@@ -1,0 +1,37 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.usoft.framework</groupId>
+    <artifactId>usoft-parent</artifactId>
+    <version>${revision}${changelist}</version>
+  </parent>
+  <artifactId>usoft-system</artifactId>
+  <name>usoft-system</name>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.mybatis-flex</groupId>
+      <artifactId>mybatis-flex-spring-boot3-starter</artifactId>
+      <version>${mybatis.flex.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.usoft.framework</groupId>
+      <artifactId>usoft-system-api</artifactId>
+      <version>${revision}${changelist}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.usoft.framework</groupId>
+      <artifactId>usoft-common</artifactId>
+      <version>${revision}${changelist}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.usoft.framework</groupId>
+      <artifactId>usoft-core</artifactId>
+      <version>${revision}${changelist}</version>
+    </dependency>
+  </dependencies>
+</project>

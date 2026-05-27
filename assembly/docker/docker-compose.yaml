@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  usoft-bi:
+    networks:
+      - usoft-bi-net
+    build:
+      context: ../../
+      dockerfile: assembly/docker/Dockerfile
+    image: usoft-bi:latest
+    container_name: usoft-bi
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./.env
+    restart: unless-stopped
+    volumes:
+      - usoft-bi-data:/uploads
+      - ./logs:/app/release/logs
+      - ./skills:/app/release/skills
+    depends_on:
+      - mysql
+      - redis
+
+  mysql:
+    networks:
+      - usoft-bi-net
+    image: mysql:8.0.36
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "${EXPOSE_MYSQL_PORT:-53306}:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  redis:
+    networks:
+      - usoft-bi-net
+    image: redis:alpine
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "${EXPOSE_REDIS_PORT:-56379}:6379"
+    volumes:
+      - redis-data:/data
+
+volumes:
+  usoft-bi-data:
+  mysql-data:
+  redis-data:
+
+networks:
+  usoft-bi-net:

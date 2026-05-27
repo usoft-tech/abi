@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${PGSQL_HOST:localhost}:${PGSQL_PORT:5432}/${PGSQL_DB_NAME:usoft_bi}
+    driver-class-name: org.postgresql.Driver
+    username: ${PGSQL_USERNAME:postgres}
+    password: ${PGSQL_PASSWORD:postgres}
+  sql:
+    init:
+      mode: ${DB_INIT_MODE:always}
+      schema-locations: classpath:db/pgsql/schema.sql
+      data-locations: classpath:db/pgsql/data.sql
+

@@ -1,0 +1,47 @@
+server:
+  port: 8080
+  max-http-request-header-size: 64KB
+  servlet:
+    context-path: /jgsz-api
+spring:
+  config:
+    import:
+    - classpath:application-redis.yml
+    - classpath:s-model.yml
+    - classpath:s-prompts.yml
+  application:
+    name: usoft-bi
+  h2:
+    console:
+      enabled: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  profiles:
+    active: ${DB_TYPE:mysql}
+  sql:
+    init:
+      mode: never
+  jackson:
+    serialization:
+      "[WRITE_DATES_AS_TIMESTAMPS]": false
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+mybatis-flex:
+  configuration:
+    map-underscore-to-camel-case: true
+security:
+  jwt:
+    secret: ${JWT_SECRET}
+    ttlSeconds: ${JWT_TTL_SECONDS:3600}
+  sm2:
+    private-key: ${SM2_PRIVATE_KEY:65696fdef794db4067776c18805a69c39285107c83aedf10a3d5c341c7a8e87a}
+
+app:
+  bi:
+    chat-file-db-path: ${BI_CHAT_FILE_DB_PATH:D:/app/bi/chat-file-db}
+  upload:
+    storagePath: ${FILE_STORAGE_PATH:uploads}
+    visitPathPrefix: ${FILE_VISIT_PATH_PREFIX:http://localhost:8080/file}

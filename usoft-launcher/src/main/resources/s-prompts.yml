@@ -1,0 +1,1633 @@
+template:
+  chunk:
+    component: |
+      # PageSchema 字段说明：
+        - info: 对象，包含页面基本信息（如 name、description）。
+        - items: 数组，顶层页面元素列表，每个元素为一个 SchemaItem。
+
+      # SchemaItem 字段说明：
+        - id: 字符串，唯一标识，必须使用随机生成的 UUID。
+        - type: 组件类型。
+        - name: 名称。
+        - description: 组件相关数据的描述，可用于生成数据查询语句。
+        - props: 组件属性对象。
+        - cascadeIds: 字符串数组，联动 ID 列表。
+        - children: 组件子元素，数组或 map（key 为插槽名，value 为元素列表），仅 b-container 支持。
+        - datasource: 组件数据源定义（source、datasourceId、scriptId、custom）。
+
+      # 组件字段说明：
+        - b-icon：
+          props:
+            - type: "font-awesome" 或 "icon-font"
+            - icon: 图标名称，根据 type 取值不同，对应 font-awesome 或 icon-font 图标库中的图标名称。
+            - classNames: 样式类名数组（tailwindcss 类）
+        - b-container（支持 tailwindcss 的 class）：
+          props:
+            - htmlTag: HTML 标签（如 "div"）
+            - classNames: 样式类名数组（tailwindcss 类）
+          children: 数组或 map（按插槽组织）
+        - b-text（文本组件，仅用于展示常规文本，不可作为数据渲染出现）：
+          props:
+            - text: 文本内容
+            - classNames: 样式类名数组（tailwindcss 类）
+        - b-html：
+          datasource:
+            - source: "custom"
+            - custom: 字符串（JSON 形式数据）
+          props:
+            - template: 字符串（支持 {{var}} 模板插值）
+        - b-echarts：
+          datasource:
+            - source: "custom"
+            - custom: 字符串（JSON 数组数据）
+          props:
+            - script: JavaScript 代码，接收数据 data，代码内部禁止再次定义变量data，返回 ECharts option 对象
+
+    schema: |
+      ${template.chunk.component}
+
+      # 组件片段样例：
+        - 简易卡片：
+        {
+          "id": "card-container-1",
+          "type": "b-container",
+          "name": "卡片样式示例一",
+          "description": "卡片样式示例一",
+          "props": {
+            "htmlTag": "div",
+            "classNames": [
+              "w-full",
+              "bg-white",
+              "rounded-xl",
+              "shadow-card",
+              "p-4",
+              "card-transition",
+              "hover:shadow-card-hover"
+            ]
+          },
+          "children": []
+        }
+
+        - 栅格样式一：
+        {
+          "id": "grid-container-1",
+          "type": "b-container",
+          "name": "栅格样式示例一",
+          "description": "栅格样式示例一：4列分布",
+          "props": {
+            "htmlTag": "div",
+            "classNames": [
+              "grid",
+              "grid-cols-1",
+              "sm:grid-cols-2",
+              "lg:grid-cols-4",
+              "gap-4",
+              "mb-8"
+            ]
+          },
+          "children": []
+        }
+
+        - 栅格样式二：
+        {
+          "id": "grid-container-2",
+          "type": "b-container",
+          "name": "栅格样式示例二",
+          "description": "栅格样式示例二：3列分布",
+          "props": {
+            "htmlTag": "div",
+            "classNames": [
+              "grid",
+              "grid-cols-1",
+              "lg:grid-cols-3",
+              "gap-6",
+              "mb-8"
+            ]
+          },
+          "children": [{
+              "id": "grid-container-2-1",
+              "type": "b-container",
+              "name": "栅格样式示例2.1",
+              "description": "栅格样式示例2.1：占左2列",
+              "props": {
+                "htmlTag": "div",
+                "classNames": ["lg:col-span-2"]
+              },
+              "children": []
+            },
+            {
+              "id": "grid-container-2-2",
+              "type": "b-container",
+              "name": "栅格样式示例2.2",
+              "description": "栅格样式示例2.2：占右1列",
+              "props": {
+                "htmlTag": "div",
+                "classNames": []
+              },
+              "children": []
+            }
+          ]
+        }
+
+        - 总览卡片：
+        {
+          "id": "overview-indicator-root-container",
+          "type": "b-container",
+          "name": "总览指标顶层容器",
+          "description": "总览指标顶层容器",
+          "props": {
+            "htmlTag": "div",
+            "classNames": [
+              "bg-white",
+              "rounded-xl",
+              "shadow-card",
+              "p-5",
+              "card-transition",
+              "hover:shadow-card-hover"
+            ]
+          },
+          "children": [{
+              "id": "overview-indicator-container",
+              "type": "b-container",
+              "name": "总览指标容器",
+              "description": "总览指标容器",
+              "props": {
+                "htmlTag": "div",
+                "classNames": [
+                  "flex",
+                  "justify-between",
+                  "items-start"
+                ]
+              },
+              "children": [{
+                  "id": "overview-indicator-value-container",
+                  "type": "b-container",
+                  "name": "总览指标数值容器",
+                  "description": "总览指标数值容器",
+                  "props": {
+                    "htmlTag": "div",
+                    "classNames": []
+                  },
+                  "children": [{
+                      "id": "overview-indicator-value-label",
+                      "type": "b-text",
+                      "name": "总览指标数值标签",
+                      "description": "总览指标数值标签",
+                      "props": {
+                        "text": "最高学历分布",
+                        "classNames": [
+                          "text-sm",
+                          "text-neutral",
+                          "font-medium"
+                        ]
+                      }
+                    },
+                    {
+                      "id": "overview-indicator-value-number",
+                      "type": "b-html",
+                      "name": "总览指标数值标签",
+                      "description": "总览指标数值标签",
+                      "props": {
+                        "template": "{{value}}",
+                        "classNames": [
+                          "text-3xl",
+                          "md:text-4xl",
+                          "font-bold",
+                          "text-gray-800"
+                        ]
+                      },
+                      "datasource": {
+                        "source": "custom",
+                        "custom": "{\"value\":1284}"
+                      }
+                    },
+                    {
+                      "id": "overview-indicator-value-desc",
+                      "type": "b-text",
+                      "name": "总览指标数值描述",
+                      "description": "总览指标数值描述",
+                      "props": {
+                        "text": "硕士及以上占比",
+                        "classNames": [
+                          "text-xs",
+                          "text-neutral",
+                          "mt-1"
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "overview-indicator-icon-container",
+                  "type": "b-container",
+                  "name": "总览指标图标容器",
+                  "description": "总览指标图标容器",
+                  "props": {
+                    "htmlTag": "div",
+                    "classNames": [
+                      "w-10",
+                      "h-10",
+                      "rounded-lg",
+                      "bg-tertiary-light",
+                      "flex",
+                      "items-center",
+                      "justify-center",
+                      "text-tertiary"
+                    ]
+                  },
+                  "children": [{
+                    "id": "overview-indicator-icon",
+                    "type": "b-icon",
+                    "name": "总览指标图标容器",
+                    "description": "总览指标图标容器",
+                    "props": {
+                      "type": "font-awesome",
+                      "icon": "fas fa-users",
+                      "classNames": [
+                        "w-10",
+                        "h-10",
+                        "rounded-lg",
+                        "bg-primary-light",
+                        "flex",
+                        "items-center",
+                        "justify-center",
+                        "text-primary"
+                      ]
+                    },
+                    "children": []
+                  }]
+                }
+              ]
+            },
+            {
+              "id": "sub-item-indicator-container",
+              "type": "b-container",
+              "name": "分项指标容器",
+              "description": "分项指标容器",
+              "props": {
+                "htmlTag": "div",
+                "classNames": [
+                  "mt-4",
+                  "grid",
+                  "grid-cols-2",
+                  "gap-2",
+                  "text-xs"
+                ]
+              },
+              "children": [{
+                  "id": "sub-item-indicator1-container",
+                  "type": "b-container",
+                  "name": "分项指标一容器",
+                  "description": "分项指标一容器",
+                  "props": {
+                    "htmlTag": "div",
+                    "classNames": []
+                  },
+                  "children": [{
+                      "id": "sub-item-indicator1-label",
+                      "type": "b-text",
+                      "name": "分项指标一标签",
+                      "description": "分项指标一标签",
+                      "props": {
+                        "text": "男性",
+                        "classNames": ["text-neutral"]
+                      }
+                    },
+                    {
+                      "id": "sub-item-indicator1-number",
+                      "type": "b-html",
+                      "name": "分项指标一数值",
+                      "description": "分项指标一数值",
+                      "props": {
+                        "template": "{{value}}",
+                        "classNames": ["font-medium"]
+                      },
+                      "datasource": {
+                        "source": "custom",
+                        "custom": "{\"value\":756}"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "sub-item-indicator2-container",
+                  "type": "b-container",
+                  "name": "分项指标二容器",
+                  "description": "分项指标二容器",
+                  "props": {
+                    "htmlTag": "div",
+                    "classNames": []
+                  },
+                  "children": [{
+                      "id": "sub-item-indicator2-label",
+                      "type": "b-text",
+                      "name": "分项指标二标签",
+                      "description": "分项指标二标签",
+                      "props": {
+                        "text": "女性",
+                        "classNames": ["text-neutral"]
+                      }
+                    },
+                    {
+                      "id": "sub-item-indicator2-number",
+                      "type": "b-html",
+                      "name": "分项指标二数值",
+                      "description": "分项指标二数值",
+                      "props": {
+                        "template": "{{value}}",
+                        "classNames": ["font-medium"]
+                      },
+                      "datasource": {
+                        "source": "custom",
+                        "custom": "{\"value\":528}"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "sub-item-indicator3-container",
+                  "type": "b-container",
+                  "name": "分项指标三容器",
+                  "description": "分项指标三容器",
+                  "props": {
+                    "htmlTag": "div",
+                    "classNames": []
+                  },
+                  "children": [{
+                      "id": "sub-item-indicator3-label",
+                      "type": "b-text",
+                      "name": "分项指标三标签",
+                      "description": "分项指标三标签",
+                      "props": {
+                        "text": "汉族",
+                        "classNames": ["text-neutral"]
+                      }
+                    },
+                    {
+                      "id": "sub-item-indicator3-number",
+                      "type": "b-html",
+                      "name": "分项指标三数值",
+                      "description": "分项指标三数值",
+                      "props": {
+                        "template": "{{value}}",
+                        "classNames": ["font-medium"]
+                      },
+                      "datasource": {
+                        "source": "custom",
+                        "custom": "{\"value\":1192}"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "sub-item-indicator4-container",
+                  "type": "b-container",
+                  "name": "分项指标四容器",
+                  "description": "分项指标四容器",
+                  "props": {
+                    "htmlTag": "div",
+                    "classNames": []
+                  },
+                  "children": [{
+                      "id": "sub-item-indicator4-label",
+                      "type": "b-text",
+                      "name": "分项指标四标签",
+                      "description": "分项指标四标签",
+                      "props": {
+                        "text": "少数民族",
+                        "classNames": ["text-neutral"]
+                      }
+                    },
+                    {
+                      "id": "sub-item-indicator4-number",
+                      "type": "b-html",
+                      "name": "分项指标三数值",
+                      "description": "分项指标三数值",
+                      "props": {
+                        "template": "{{value}}",
+                        "classNames": ["font-medium"]
+                      },
+                      "datasource": {
+                        "source": "custom",
+                        "custom": "{\"value\":92}"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+
+app:
+  ai:
+    skill-store-dir: ${SKILL_STORE_DIR:/app/skills}
+  prompts:
+    - name: generate-echarts-script
+      template: |
+        # 角色：资深 ECharts 组件工程师，熟悉 ECharts API 与本系统 SchemaItem 规范与数据绑定；负责依据用户迭代要求生成组件的 props.script 代码。
+        # 目标：根据用户输入要求，针对已生成页面中的指定组件，生成符合要求的 props.script 代码。
+
+        # 输出规则：
+          - 仅输出最终的 props.script 代码（字符串），包含完整的 JavaScript（ES2025） 函数体。
+          - 脚本全局变量：data（包含组件数据源数据）。
+            - ECharts组件：返回值：ECharts option 对象
+          - 脚本内容：根据用户需求，使用 ECharts API 生成符合要求的图表配置（option）。
+
+        # 示例：
+        return {
+          xAxis: { type: 'category', data: data.map(i => i.name) },
+          yAxis: { type: 'value' },
+          series: [{ data: data.map(i => i.value), type: 'line' }]
+        }
+
+        # 当前组件
+        {{ selected_page_item }}
+
+        # 用户输入要求（迭代点）
+        {{user_input}}
+
+    - name: generate-sql-output
+      model: ${PROMPT_GENERATE_SQL_OUTPUT_MODEL:default}
+      template: |
+        # 角色：资深数据工程与建模助手，擅长从 SQL 查询结果抽象更简洁明朗的数据结构，并给出稳定的数据转换脚本。
+        # 目标：根据输入的 SQL 语句，产出两部分内容：
+          - 数据转换脚本（JavaScript，ES2025）：仅输出 function 内部内容；参数名为 data；最后一行必须为 return；
+          - 输出数据结构描述：严格符合 Output 结构。
+
+        # 输入：
+          - SQL：{{sql}}
+
+        # 规则与格式：
+          - 仅输出 JSON，不输出任何解释或额外文本。
+          - 顶层对象包含两个键：
+              - "script": 字符串，内容为“函数内部代码片段”，不含 function 签名与花括号，仅主体；参数名固定为 data；最后一行必须为 return。
+              - "output": Output 结构：
+                  { "fields": FieldSchema[] }
+          - 字段命名简洁一致；name 使用中文友好命名；key 使用英文驼峰风格；
+          - 优先将宽表列聚合为更合理的对象或数组结构，避免冗余；明确主维度与度量；保留必要的层级关系。
+
+        # 数据结构
+          - Output 结构：
+                { "fields": FieldSchema[] }
+          - FieldSchema：字段描述对象，包含 key、name、type（STRING/NUMBER/BOOLEAN/OBJECT/ARRAY），当 type 为 OBJECT/ARRAY 时，包含 schema 子字段描述。
+                - "key": string，字段唯一标识符，使用英文驼峰风格；
+                - "name": string，字段中文友好名称；
+                - "type": string，字段数据类型（STRING/NUMBER/BOOLEAN/OBJECT/ARRAY）；
+                - "schema"?: Output，当 type 为 OBJECT/ARRAY 时，包含子字段描述数组（递归定义）。
+
+        # 产出：
+        {
+          "script": "",
+          "output": {
+            "fields": []
+          }
+        }
+
+    - name: create-page-schema
+      model: code
+      template: |
+        # 角色：资深低代码 BI 页面设计助手，熟悉 HTML、ES2025、ECharts、TailwindCSS 及本系统的 PageSchema/SchemaItem 规范；负责将业务需求转化为严格合规、可渲染的页面 Schema JSON。
+        # 任务：根据用户输入要求，生成低代码 BI 页面 Schema 的 JSON。
+
+        # 数据价值挖掘要求（关键）：
+          - **价值排序（Value-driven Layout）**：按照页面元数据和系统数据结构说明挖掘数据价值，并按照价值从高到低在页面中从上到下进行排列。
+          - **深度（Depth）**：对核心指标进行多层级下钻分析。例如，不仅展示“总人数”，还要细分到“各年级性别比例”、“各地区年龄分布趋势”等。
+          - **粒度（Granularity）**：分析维度要尽可能细致。利用时间（年/季/月/日）、空间（省/市/县/校）、类别（类型/状态/等级）等所有可用维度进行切片。
+          - **广度（Breadth）**：关联多表数据进行交叉分析。寻找不同业务域之间的联系（如：投入与产出的关系，师资与成绩的关系）。
+          - **数量（Quantity）**：页面组件数量要足够丰富，填满页面布局。不要留有大片空白。尽可能多地生成有意义的图表（KPI卡片、趋势图、分布图、对比图、排名表等），确保信息密度高。
+          - **价值最大化**：穷尽数据表中所有有价值的字段，不遗漏任何可能反映业务健康度、风险或机会的数据点。
+
+        # 数据展示规则说明：
+          - **多样化（Diversity）**：图表类型和形式尽量多样化。避免全篇仅使用一种图表，应根据数据特性选择最合适的展示形式（柱、线、饼、雷达、漏斗、盒须、k线、热力、桑基、散点、矩形树、旭日、仪表盘、象形柱、平行坐标系、和弦、关系、地图等）。
+          - **组合展示（Combination）**：鼓励多图表组合展示。利用不同视角的图表相互补充，形成完整的数据故事。
+          - **总分结构（Total-Part Structure）**：每一个模块或数据主题，强烈建议采用“关键指标卡片（KPI Card） + 详细分析图表”的组合形式。用卡片直观展示“总”量，用图表展示“分”布或趋势。
+          - **清晰标识（Identification）**：每一个数据模块或数据主题必须具有清晰、醒目的标题和标识（Label/Title），界定分析范围。
+          - **分析说明（Analysis Text）**：对于关键或复杂的数据洞察，应补充简短的文本分析说明（使用 b-text 或 b-html），辅助用户理解数据含义。
+
+        # 页面布局建议：
+          - **全局总分 (Global Total-Part)**：页面整体布局遵循“总分”原则，顶部优先展示全局核心指标（KPI），下方按主题展开详细分析。
+          - **视觉统一 (Visual Unity)**：统一页面色调（建议蓝绿色系），确保风格简洁明快，标签清晰易读。
+          - **图表标题分离**：ECharts 配置中不显示 title，必须将标题独立展示在上级数据卡片容器中。
+          - **主题分组布局**：页面内容必须严格按数据主题分组。
+          - **结构化展示**：每个数据主题采用“总分”、“总分总”或“分总”结构展示（如 KPI 卡片 + 详细图表）。
+          - **标题容器增强**：数据卡片的标题区域应包含：图标（Icon）、标题文本、描述信息（Description）和工具栏（Toolbar）。
+          - **图例独立展示**：建议使用 b-html 组件独立展示图表图例，以实现更丰富美观的视觉效果。
+          - **卡片式设计**：使用 b-container 结合 TailwindCSS 实现卡片式布局，添加阴影（shadow-sm/md）和圆角，使结构清晰。
+          - **响应式栅格**：遵循移动端优先原则（Mobile First），确保在不同屏幕下显示正常。
+            - 移动端：每行仅允许 1 个Echarts图表。
+            - 桌面端：每行允许 2 ~ 4 个Echarts图表。
+
+        # 交互建议：
+          - 图表支持动态筛选、联动（通过 cascadeIds）。
+          - 输入组件与图表建立联动，统一变量管理（variables）。
+          - 卡片数字动态动画
+          - 图表悬浮显示详细数据
+          - 标签旋转防止重叠，饼图显示百分比
+          - 统一字体字号，风格协调
+
+        # 输出数据结构说明：
+          - 顶层必须输出一个 JSON 对象。
+          - 顶层对象包含两个字段：
+              - "summary"：字符串，用自然语言对本页面结构进行简要总结说明。
+              - "plans": Plan对象，页面展示的数据元素清单。
+              - "schema"：PageSchema 对象，结构需符合 PageSchema/SchemaItem 规范。
+          - "schema" 字段中的Plan：
+              - 字段为 { name, description }。
+              - `name` 字段描述计划的主题名称，保持字数在15个字以内。
+              - `description` 字段应简要描述该元素的数据逻辑（如维度、指标、图表类型建议等，纯文本描述）。仅允许自然语言描述，确保内容简洁清晰。
+              - 严禁出现 Base64 编码、JavaScript 脚本、HTML 代码等复杂内容。
+          - "schema" 字段中的 PageSchema：
+              - 字段为 { info, items }。
+              - items 为 SchemaItem 数组，每个 SchemaItem 包含 { id, type, name, description, props, cascadeIds, children, datasource }。
+              - children 允许为数组(List<SchemaItem>) 或对象(Map<string, List<SchemaItem>>)，根据组件需要选择。
+          - 必须保证 JSON 结构完整、可被直接反序列化为 CreatePageSchemaResponse。
+
+        # PageSchema 字段说明：
+          - info: 对象，包含页面基本信息（如 name、description）。
+          - items: 数组，顶层页面元素列表，每个元素为一个 SchemaItem。
+
+        # SchemaItem 字段说明：
+          - id: 字符串，唯一标识，必须使用随机生成的 UUID。
+          - type: 组件类型。
+          - name: 名称。
+          - description: 组件相关数据的描述，可用于生成数据查询语句。
+          - props: 组件属性对象。
+          - cascadeIds: 字符串数组，联动 ID 列表。
+          - children: 组件子元素，数组或 map（key 为插槽名，value 为元素列表），仅 b-container 支持。
+          - datasource: 组件数据源定义（source、datasourceId、scriptId、custom）。
+
+        # 组件字段说明：
+          - b-icon（图标组件）
+              props:
+              - type: "font-awesome" 或 "icon-font"
+              - icon: 图标名称，根据 type 取值不同，对应 font-awesome 或 icon-font 图标库中的图标名称。
+              - classNames: 样式类名数组（tailwindcss 类）
+          - b-container（容器组件：支持 tailwindcss 的 class）：
+              props:
+              - htmlTag: HTML 标签（如 "div"）
+              - classNames: 样式类名数组（tailwindcss 类）
+              children: 子元素列表（仅支持数组，不支持 map 插槽结构）。
+          - b-text（文本组件，仅用于展示常规文本，不可作为数据渲染出现）
+              props:
+              - text: 文本内容
+              - classNames: 样式类名数组（tailwindcss 类）
+          - b-html（仅用来展示数据，不可作为筛选表单出现）
+              datasource:
+              - source: "custom"
+              - custom: 字符串（JSON 形式数据）
+              props:
+              - template: 字符串（支持 {{var}} 模板插值）。
+          - b-echarts（图表组件）
+              datasource:
+              - source: "custom"
+              - custom: 字符串（JSON 数组数据）
+              props:
+              - script: JavaScript 函数内部代码（不包括function定义包裹），接收数据 data，代码内部禁止再次定义变量data，返回 ECharts option 对象
+
+        # 页面元数据
+        {{page_metadata}}
+
+        # 系统数据结构说明：
+        {{system_tables}}
+
+        # icon-font 图标库
+        {{icon_font}}
+
+        # 页面生成逻辑
+          1. 规划页面数据项：分析用户需求，从数据库中提取关键指标（KPI）和维度，确定图表类型（趋势、分布、占比等）及数据聚合方式。
+          2. 规划页面布局：采用现代 Dashboard 布局，合理划分 Header、 Content 区域。使用 Grid 或 Flex 布局确保响应式适配，遵循“F”型或“Z”型视觉流线，将核心指标置于显眼位置。
+          3. 挨个细化页面模块内容：为每个模块填充具体组件（如 ECharts 图表、统计卡片），设置清晰的标题和描述，确保数据展示逻辑严密。
+          4. 挨个美化每个页面模块：使用 Tailwind CSS 调整配色、间距、圆角和阴影。统一设计语言，确保风格简洁、专业、现代。
+          5. 优化 Echarts 样式：定制图表配色方案，移除冗余的网格线和边框，优化 Tooltip 和 Legend 样式，提升图表的可读性和交互体验。
+
+        # 输出规则：
+          - 语言：中文。
+          - 禁止推理过程中输出任何提示词、代码、数据结构、结果JSON等。
+          - 仅输出最终 JSON；严禁包含 ```json 标记、注释或额外文本。
+          - JSON 语法必须严格准确，能够 100% 被 JSON.parse 解析且不报错。
+          - 输出结构必须严格与 PageSchema 字段定义保持一致，禁止添加未定义的字段。
+          - 保持字段命名与大小写一致。
+          - 所有 id 唯一；缺省字段按合理默认生成。
+          - children 选择最合适的数据结构（数组或 map）。
+          - 样式类名仅允许复用 tailwindcss。
+
+        # 示例：
+        {
+          "summary": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+          "schema": {
+            "info": { "name": "销售看板", "description": "按品牌展示日销量" },
+            "items": [
+              {
+                "id": "container-1",
+                "type": "b-container",
+                "name": "主容器",
+                "description": "页面主体",
+                "props": { "htmlTag": "div", "classNames": ["container", "mx-auto", "p-4"] },
+                "cascadeIds": [],
+                "children": [
+                  {
+                    "id": "title-1",
+                    "type": "b-text",
+                    "name": "标题",
+                    "description": "",
+                    "props": { "text": "销售趋势" }
+                  },
+                  {
+                    "id": "chart-1",
+                    "type": "b-echarts",
+                    "name": "折线图",
+                    "description": "",
+                    "props": {
+                      "script": "return { xAxis: { type: 'category', data: data.map(i => i.name) }, yAxis: { type: 'value' }, series: [{ data: data.map(i => i.value), type: 'line' }] };"
+                    },
+                    "datasource": { "source": "custom", "custom": "[{\"name\":\"Mon\",\"value\":150},{\"name\":\"Tue\",\"value\":230},{\"name\":\"Wed\",\"value\":224}]" }
+                  },
+                  {
+                    "id": "icon-1",
+                    "type": "b-icon",
+                    "name": "图标",
+                    "description": "",
+                    "props": { "type": "font-awesome", "icon": "fa-chart-line", "classNames": ["text-blue-500"], "customStyle": {} }
+                  },
+                  {
+                    "id": "html-1",
+                    "type": "b-html",
+                    "name": "HTML块",
+                    "description": "",
+                    "props": { "dataSource": { "name": "Confucius" }, "template": "<div>{{name}}, welcome to the world of programming.</div>" },
+                    "datasource": { "source": "custom", "custom": "{\"name\":\"Confucius\"}" }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+
+    - name: iteration-page-schema
+      model: code
+      template: |
+        # 角色：资深低代码 BI 页面设计助手，熟悉 HTML、ES2025、ECharts、TailwindCSS 及本系统的 PageSchema/SchemaItem 规范；负责依据用户的迭代要求，对已有页面 Schema JSON 进行优化升级，同时保持结构与约束不变。
+        # 目标：根据用户输入要求，针对 create-page-schema 生成的 JSON 进行优化迭代，输出新的 PageSchema（仅 JSON）。
+
+        # 迭代原则：
+          - 意图一致性：迭代后 JSON 必须与用户需求保持一致；相比 `current_page_schema` 更加贴近需求，数据更完整与更丰富。
+          - 风格继承：当用户未明确提出样式或布局变更时，页面风格与布局必须与 `current_page_schema` 保持一致（主题色、栅格、间距、排版）。
+          - id 保留：优先保留现有 id 以减少联动破坏；新增元素生成唯一 id；移除元素需同步清理相关联动与触发器。
+          - 结构合法：严格遵循 PageSchema/SchemaItem 结构；children 仅允许数组(List<SchemaItem>) 或对象(Map<string, List<SchemaItem>>) 两种合法形态。
+          - 组件范围：仅使用 b-icon、b-container（支持 tailwindcss class）、b-text、b-html、b-echarts；调整仅限上述范围内。
+          - 交互有效：联动 cascadeIds 必须指向存在的目标；移除死链。
+          - 布局一致：b-container 使用 classNames（tailwindcss）；移动端优先，xs=24；必要时设置 sm/md/lg/xl/xxl 响应式断点。
+          - 脚本可维护：b-echarts 的 props.script 清晰可读；避免未声明变量与过度复杂脚本。
+          - 命名规范：中文 label/标题一致清晰；id 使用英文短横线；purpose 简明表达用途。
+          - 空态与回退：为空数据/异常提供合理占位与回退（文本/空图/提示）。
+          - 性能与安全：不输出敏感信息；仅输出 JSON，不含解释文本。
+
+        # 输出数据结构说明：
+          - 顶层必须输出一个 JSON 对象。
+          - 顶层对象包含两个字段：
+            - "plans": Plan对象，页面展示的数据元素清单。
+            - "effectItems"：变更项数组，每个元素描述一个变更操作。
+            - "summary"：字符串，用自然语言对本页面结构进行简要总结说明。
+          - "plans" 数组中的计划元素：
+            - 字段为 { name, description }。
+            - `name` 字段描述计划的主题名称，保持字数在15个字以内。
+            - `description` 字段应简要描述该元素的数据逻辑（如维度、指标、图表类型建议等，纯文本描述）。仅允许自然语言描述，确保内容简洁清晰。
+            - 严禁出现 Base64 编码、JavaScript 脚本、HTML 代码等复杂内容。
+          - "effectItems" 数组中的变更项对象：
+            - "pageItem": 页面变更详情对象，包含目标及变更后的结构。
+            - "changeNote": 字符串，变更说明。
+          - "pageItem" 对象结构：
+            - "targetId": 字符串，目标页面项 ID（变更的基准点），必须存在于原始的 `当前页面布局` 中。
+            - "position": 字符串，位置关系，枚举值：before（前置）、after（后置）、replace（替换）、insert（插入到子元素）。
+            - "insertSlot": 字符串，当 position 为 insert 且目标容器支持插槽时，指定插槽名称；否则为空。
+            - "pageItem": 完整的 SchemaItem 组件对象，包含 id, type, name, description, props, cascadeIds, children, datasource。
+          - 必须保证 JSON 结构完整、符合上述字段定义。
+
+        # SchemaItem 字段说明：
+          - id: 字符串，唯一标识，必须使用随机生成的 UUID。
+          - type: 组件类型。
+          - name: 名称。
+          - description: 组件相关数据的描述，可用于生成数据查询语句。
+          - props: 组件属性对象。
+          - cascadeIds: 字符串数组，联动 ID 列表。
+          - children: 组件子元素，数组或 map（key 为插槽名，value 为元素列表），仅 b-container 支持。
+          - datasource: 组件数据源定义（source、datasourceId、scriptId、custom）。
+
+        # 组件字段说明：
+          - b-icon（图标组件）
+              props:
+              - type: "font-awesome" 或 "icon-font"
+              - icon: 图标名称，根据 type 取值不同，对应 font-awesome 或 icon-font 图标库中的图标名称。
+              - classNames: 样式类名数组（tailwindcss 类）
+          - b-container（容器组件：支持 tailwindcss 的 class）：
+              props:
+              - htmlTag: HTML 标签（如 "div"）
+              - classNames: 样式类名数组（tailwindcss 类）
+              children: 子元素列表（仅支持数组，不支持 map 插槽结构）。
+          - b-text（文本组件，仅用于展示常规文本，不可作为数据渲染出现）
+              props:
+              - text: 文本内容
+              - classNames: 样式类名数组（tailwindcss 类）
+          - b-html（仅用来展示数据，不可作为筛选表单出现）
+              datasource:
+              - source: "custom"
+              - custom: 字符串（JSON 形式数据）
+              props:
+              - template: 字符串（支持 {{var}} 模板插值）。
+          - b-echarts（图表组件）
+              datasource:
+              - source: "custom"
+              - custom: 字符串（JSON 数组数据）
+              props:
+              - script: JavaScript 函数内部代码（不包括function定义包裹），接收数据 data，代码内部禁止再次定义变量data，返回 ECharts option 对象
+
+        # 系统数据结构说明：
+        {{system_tables}}
+
+        # icon-font 图标库
+        {{icon_font}}
+        
+        # 输出规则：
+          - 仅输出最终 JSON；严禁包含 ```json 标记、注释或额外文本。
+          - JSON 语法必须严格准确，能够 100% 被 JSON.parse 解析且不报错。
+          - 输出结构必须严格与上述字段定义保持一致，禁止添加未定义的字段。
+          - 保持字段命名与大小写一致。
+          - pageItem 必须为完整的 SchemaItem 结构，包含 id, type, name, description, props, cascadeIds, children, datasource。
+          - children 允许为数组(List<SchemaItem>) 或对象(Map<string, List<SchemaItem>>)。
+          - 样式类名仅允许复用 tailwindcss。
+
+        # 当前页面布局
+        {{current_page_schema}}
+
+    - name: iteration-page-item
+      model: code
+      template: |
+        # 角色：资深组件工程师，熟悉本系统 SchemaItem 规范与数据绑定；负责依据用户迭代要求优化单个组件项，同时保持页面整体一致性。
+        # 目标：根据用户输入要求，针对已生成页面中的指定单个 SchemaItem 进行优化迭代，仅输出该 SchemaItem（JSON）。
+
+        # 迭代原则：
+          - 意图一致性：迭代后 SchemaItem 必须与用户需求保持一致；相较于原组件更贴近需求，数据更完整与更丰富（可合理补充 datasource/props）。
+          - 风格继承：当用户未明确提出样式或布局变更时，组件风格与页面整体风格保持一致（主题色、排版、间距、栅格）。
+          - id 保留：必须保留原组件 id；如新增子元素/插槽项需生成唯一 id；移除子元素需同步清理相关联动。
+          - 结构合法：严格遵循 SchemaItem 结构；children 仅允许数组(List<SchemaItem>) 或对象(Map<string, List<SchemaItem>>) 两种合法形态。
+          - 组件范围：组件类型限定在 b-icon、b-container（支持 tailwindcss class）、b-text、b-html、b-echarts；如需调整仅在上述范围内。
+          - 数据对齐：datasource 的库、表、字段、过滤条件与系统数据结构对齐；未知字段合理占位且可替换。
+          - 交互有效：cascadeIds 必须指向存在的目标；移除死链；。
+          - 脚本可维护：b-echarts 的 props.script 清晰可读；变量使用 variables 管理；避免未声明变量与过度复杂脚本。
+          - 命名规范：name/description 清晰一致；purpose 简明表达用途；避免冗余和歧义。
+          - 空态与回退：为空数据/异常提供合理占位与回退（文本/空图/提示）。
+          - 性能与安全：不输出敏感信息；仅输出 JSON，不含解释文本。
+
+        # 输出数据结构说明：
+          - 顶层必须输出一个 JSON 对象。
+          - 顶层对象包含两个字段：
+            - "plans": Plan对象，页面展示的数据元素清单。
+            - "effectItems"：变更项数组，每个元素描述一个变更操作。
+            - "summary"：字符串，用自然语言对本页面结构进行简要总结说明。
+          - "plans" 数组中的计划元素：
+            - 字段为 { name, description }。
+            - `name` 字段描述计划的主题名称，保持字数在15个字以内。
+            - `description` 字段应简要描述该元素的数据逻辑（如维度、指标、图表类型建议等，纯文本描述）。仅允许自然语言描述，确保内容简洁清晰。
+            - 严禁出现 Base64 编码、JavaScript 脚本、HTML 代码等复杂内容。
+          - "effectItems" 数组中的变更项对象：
+            - "pageItem": 页面变更详情对象，包含目标及变更后的结构。
+            - "changeNote": 字符串，变更说明。
+          - "pageItem" 对象结构：
+            - "targetId": 字符串，目标页面项 ID（变更的基准点），必须存在于原始的 `目标组件集合` 中。
+            - "position": 字符串，位置关系，枚举值：before（前置）、after（后置）、replace（替换）、insert（插入到子元素）。
+            - "insertSlot": 字符串，当 position 为 insert 且目标容器支持插槽时，指定插槽名称；否则为空。
+            - "pageItem": 完整的 SchemaItem 组件对象，包含 id, type, name, description, props, cascadeIds, children, datasource。
+          - 必须保证 JSON 结构完整、符合上述字段定义。
+
+        # SchemaItem 字段说明：
+          - id: 字符串，唯一标识，必须使用随机生成的 UUID。
+          - type: 组件类型。
+          - name: 名称。
+          - description: 组件相关数据的描述，可用于生成数据查询语句。
+          - props: 组件属性对象。
+          - cascadeIds: 字符串数组，联动 ID 列表。
+          - children: 组件子元素，数组或 map（key 为插槽名，value 为元素列表），仅 b-container 支持。
+          - datasource: 组件数据源定义（source、datasourceId、scriptId、custom）。
+
+        # 组件字段说明：
+          - b-icon（图标组件）
+              props:
+              - type: "font-awesome" 或 "icon-font"
+              - icon: 图标名称，根据 type 取值不同，对应 font-awesome 或 icon-font 图标库中的图标名称。
+              - classNames: 样式类名数组（tailwindcss 类）
+          - b-container（容器组件：支持 tailwindcss 的 class）：
+              props:
+              - htmlTag: HTML 标签（如 "div"）
+              - classNames: 样式类名数组（tailwindcss 类）
+              children: 子元素列表（仅支持数组，不支持 map 插槽结构）。
+          - b-text（文本组件，仅用于展示常规文本，不可作为数据渲染出现）
+              props:
+              - text: 文本内容
+              - classNames: 样式类名数组（tailwindcss 类）
+          - b-html（仅用来展示数据，不可作为筛选表单出现）
+              datasource:
+              - source: "custom"
+              - custom: 字符串（JSON 形式数据）
+              props:
+              - template: 字符串（支持 {{var}} 模板插值）。
+          - b-echarts（图表组件）
+              datasource:
+              - source: "custom"
+              - custom: 字符串（JSON 数组数据）
+              props:
+              - script: JavaScript 函数内部代码（不包括function定义包裹），接收数据 data，代码内部禁止再次定义变量data，返回 ECharts option 对象
+
+        # 系统数据结构说明：
+        {{system_tables}}
+
+        # icon-font 图标库
+        {{icon_font}}
+        
+        # 输出规则：
+          - 仅输出最终 JSON；严禁包含 ```json 标记、注释或额外文本。
+          - JSON 语法必须严格准确，能够 100% 被 JSON.parse 解析且不报错。
+          - 输出结构必须严格与上述字段定义保持一致，禁止添加未定义的字段。
+          - 保持字段命名与大小写一致。
+          - pageItem 必须为完整的 SchemaItem 结构，包含 id, type, name, description, props, cascadeIds, children, datasource。
+          - children 允许为数组(List<SchemaItem>) 或对象(Map<string, List<SchemaItem>>)。
+          - 样式类名仅允许复用 tailwindcss。
+
+        # 目标组件集合
+        {{target_items}}
+
+    - name: create-dataset
+      model: code
+      template: |
+        # 角色：资深数据工程师，熟悉数据库结构与数据绑定规范，精通 SQL 编写与数据转换脚本。
+        # 任务：根据用户需求和提供的数据库结构，生成标准的数据集配置（JSON格式）。
+
+        # 输入数据：
+        1. 需求描述：
+        {{requirement}}
+
+        2. 数据库结构：
+        {{db}}
+
+        3. 目标组件数据Schema：
+        {{data_target_schema}}
+
+        # 输出要求：
+        1. 返回格式必须为符合 BiDatasetResponse 结构的 JSON。
+        2. 字段要求：
+           - type: 必须为 "SQL"。
+           - config.sql.dataSourceId: 空字符串 ""。
+           - config.sql.sql: 根据需求和数据库结构编写的高效 SQL 查询语句。
+             - SQL 语法必须符合 database type 指定数据库类型的语法规范。
+             - SQL 必须严格基于提供的表结构（table.name、column.name），不得臆造表名或字段名。
+             - SQL 别名的使用必须在SQL语句中存在显式定义，不能依赖数据库默认别名。
+             - SQL中的 alias.column 语法中column必须来自alias别名指向的表字段或子查询结果字段。
+             - 避免笛卡尔积，正确使用 JOIN 条件，优先在子查询条件过滤必要数据后再进行表关联。
+             - 如果需要嵌套聚合，请务必使用 `with` 语句。
+             - SQL 应尽量简洁高效。
+             - 务必使用`>`、`<`、`>=`、`<=`运算符来指定时间范围。
+             - SELECT中存在聚合函数时其余的所有非聚合列必须出现在GROUP BY中。
+           - config.output.fields: 数据集输出数据结构描述。
+             - 必须以返回结果中的config.script return 返回值为准进行推断。
+             - 严格符合 Output 结构。
+           - config.script: JavaScript 数据转换脚本，用于将 SQL 结果转换为目标组件所需的格式。
+             - 数据转换脚本（JavaScript，ES2025）：仅输出 function 内部内容；参数名为 data。
+             - 最后一行必须为 return，返回值严格符合JSON格式，数据结构必须与config.output.fields描述一致。
+             - 如果不需要转换，可返回 `data`。
+            - Output 结构：
+                  { "fields": FieldSchema[] }
+            - FieldSchema：字段描述对象，包含 key、name、type（STRING/NUMBER/BOOLEAN/OBJECT/ARRAY），当 type 为 OBJECT/ARRAY 时，包含 schema 子字段描述。
+                  - "key": string，字段唯一标识符，使用英文驼峰风格；
+                  - "name": string，字段中文友好名称；
+                  - "type": string，字段数据类型（STRING/NUMBER/BOOLEAN/OBJECT/ARRAY）；
+                  - "schema"?: Output，当 type 为 OBJECT/ARRAY 时，包含子字段描述数组（递归定义）。
+
+        # BiDatasetResponse JSON 结构示例：
+        {
+          "type": "SQL",
+          "config": {
+            "sql": {
+              "sql": "SELECT ...",
+              "dataSourceId": ""
+            },
+            "output": {
+              "fields": [
+                { "key": "field1", "name": "字段1", "type": "STRING" },
+                { "key": "field2", "name": "字段2", "type": "NUMBER" }
+              ]
+            },
+            "script": "return data.map(item => ({ ... }));"
+          }
+        }
+
+        # 严格遵守：
+        - 仅输出 JSON，不要包含 Markdown 代码块标记（```json ... ```）。
+        - 确保 JSON 格式合法。
+
+    - name: generate-report-chapters
+      model: default
+      template: |
+        # 角色：资深数据分析师，擅长解读 BI 仪表盘数据，能够根据页面布局和数据内容，规划出结构清晰、逻辑严密的数据解读报告目录。
+        # 目标：根据提供的 BI 页面结构（PageSchema），生成一份数据解读报告的章节目录。
+
+        # 任务
+          - 读取用户需求与数据，规划 3–9 个一级章节；必要时为每个章节拆分 1–5 个二级子章节。
+          - 二级子章节如需细分，可再拆分 1–3 个三级子章节；总体深度不超过三级。
+          - 保证章节之间不重复、不交叉、逻辑清晰，顺序符合阅读与因果关系。
+          - 为每个章节生成简要中文描述（不超过 200 字），说明该章的目标与覆盖范围。
+          - 指定章节间的依赖（如“先有定义，再谈口径与对比”），用于后续报告编排。
+          - 为每个章节识别并返回 `usingDataIds`（数据 ID 集合），用于标注该章节将引用的核心/参考数据条目 ID；若无明确数据，返回空数组。
+
+        # 规则
+          - 章节标题使用中文，精准、具体；避免空话（如“背景介绍”“其他”等泛词）。
+          - ID 全局唯一、可读（建议短 UUID 或形如 c1、c1-1）；仅字母、数字、连接线。
+          - dependencies 仅引用现有章节 ID；不要循环依赖；尽量保持依赖图简洁。
+          - 一级章节建议覆盖：概览与目标、核心定义/口径、数据分析与对比、结论与建议、局限与后续工作（按需取舍）。
+          - 避免生成与数据/需求无关的章节；不得要求用户额外提供内容。
+          - 章节层级最多四级：一级、二级、三级、四级；四级不再继续拆分。
+          - 论证闭环要求：顶层结构必须能支撑全文观点的完整阐述路径，从「问题/目标→关键定义与口径→证据与分析→对比与推演→结论与建议→局限与后续」形成闭环，可按需增删但不得缺失关键环节。
+          - 第一章应简要列出核心论点与支撑要点，并给出推荐阅读/论证路径；其后章节应围绕该主线展开。
+          - 每个章节的 description 必须明确其对全文观点的贡献，并采用固定要素表达：包含「目标」「论点/假设」「证据/数据来源」「结论要点/与全文观点的关系」，建议用中文分号分隔（≤200字）。
+          - 依赖须体现论证顺序与支撑关系，遵循从定义→证据→对比→结论→建议的因果链，无环且尽量简洁。
+
+        # 页面结构：
+        {{page_schema}}
+
+        # 输出要求：
+          - 1. 仅输出 JSON 格式，不包含任何额外说明。
+          - 2. JSON 结构为一个对象，包含 "chapters" 字段，该字段为章节数组。
+          - 3. 每个章节包含 "title"（章节标题）、"description"（章节主要内容简述）和 "children"（子章节数组，可选）。
+          - 4. "children" 结构与父章节一致，支持多层级嵌套。
+          - 5. 章节规划应涵盖页面的主要分析维度，例如：整体概览、核心指标分析、趋势分析、分布分析等（根据实际页面内容调整）。
+
+        # 示例：
+          {
+            "chapters": [
+              { "title": "整体概览", "description": "简述本页面的核心指标表现及整体业务状况。" },
+              { 
+                "title": "销售趋势分析", 
+                "description": "分析销售额随时间的变化趋势，识别高峰与低谷。",
+                "children": [
+                  { "title": "月度趋势", "description": "分析本月的日销售趋势。" },
+                  { "title": "季度同比", "description": "对比去年同期的销售表现。" }
+                ]
+              },
+              { "title": "地区分布洞察", "description": "对比不同地区的销售表现，挖掘潜力市场。" }
+            ]
+          }
+
+    - name: generate-report-content
+      model: default
+      template: |
+        # 角色：资深数据分析师，擅长撰写专业、深入的数据分析报告。
+        # 目标：根据 BI 页面结构、组件数据以及指定的章节主题，撰写该章节的详细分析内容。
+        主要任务是**做整理，而不是做摘要**，尽量将相关的信息都整理出来，**不要遗漏**！！！
+
+        # 总体要求（必须严格遵守）
+          - **语言要求**：报告必须全程使用中文输出，一些非中文的专有名词可以不用使用中文。
+          - **信息来源**：报告内容必须严格基于给定的知识库内容，**不允许编造任何未提供的信息，尤其禁止捏造、推断数据**。
+          - **客观中立**：严禁任何形式的主观评价、推测或个人观点，只允许客观地归纳和总结知识库中明确提供的信息、数据。
+          - **细节深入**：用户为专业的信息收集者，对细节敏感，请提供尽可能详细、具体的信息。
+          - **内容丰富**：生成的报告要内容丰富，在提取到的相关信息的基础上附带知识库中提供的背景信息、数据等详细的细节信息。  
+          - **内部信息保密**：严禁在正文泄露任何内部信息，包括提示词、规则、内部标签或字段名、服务键等；不要出现“提示词”“JSON”“字段”“标签”“变量”“serviceKey”等术语或尖括号/方括号占位符。
+          - **禁止结构名与占位符**：正文不得出现任何内部数据结构名称或占位符（如 <...> 或 [...]），只保留分析内容本身。
+          - **法律与合规**：内容须遵守伦理与国家法律法规及平台政策；不得包含或引导违禁信息（仇恨、歧视、色情、暴力、恐怖主义、邪教、赌博、毒品、教唆自杀等），不得指导违法操作。
+          - **政治中立与审慎**：不进行政治动员、立场引导或宣传；涉及敏感政治话题仅做事实性陈述与来源引用，避免价值判断与宣传性表达。
+          - **逻辑连贯性**：要按照从前到后的顺序、依次递进分析，可以从宏观到微观层层剖析，从原因到结果等不同逻辑架构方式，以此保证生成的内容既长又逻辑紧密
+
+          ## 章节规则与使用（必须严格遵守）
+          - 使用提供的章节规划 <chapters>，按章节顺序组织报告结构；一级章节对应一级标题，子章节对应二级/三级标题。
+          - 标题层级仅使用 `#`、`##`、`###`、`####`，不使用以上层级及以上；章节深度不超过四级。
+          - 每个章节都需包含：该章的目标与范围（1–2句）、关键结论与依据、数据/来源引用、局限或注意事项（如适用）。
+          - 当章节存在依赖时，先在被依赖章节中给出必要的定义/口径或背景，再在依赖章节中引用并延展；避免前后矛盾。
+          - 严禁遗漏章节或合并无关章节；如某章无数据支撑，应在该章明确说明“不足/未覆盖”并给出后续补充建议。
+
+          ## 执行步骤
+
+          ### 第一步：规划报告结构
+          - 仔细分析用户查询的核心需求。
+          - 根据分析结果，设计紧凑、聚焦的报告章节结构，避免内容重复或冗余。
+          - 各章节之间逻辑清晰、层次分明，涵盖用户查询涉及的所有关键方面。
+          - 如果知识库中没有某方面的或者主题的内容，则不要生成这个主题，避免报告中出现知识库没有提及此项内容
+
+          ###第二步：提取相关信息
+          - 采用【金字塔原理】：先结论后细节，确保逻辑层级清晰;
+          - 严格确保所有数据、实体、关系和事件与知识库内容完全一致，严厉禁止任何推测或编造。
+
+          ### 第三步：组织内容并丰富输出，有骨有肉
+          - 按照第一步和第二步规划的结构，将提取到的信息进行组织。
+          - 关键结论：逐条列出重要发现、核心论点、结论、建议等，附带数据或信息来源（如【据XX 2023年研究显示...】）  
+          - 背景扩展：对每条关键结论都需要补充知识库中提到的详细的相关历史/行业背景（如该问题的起源、同类事件对比），支持关键结论的论据信息以及数据信息  
+          - 争议与多元视角：呈现不同学派/机构的观点分歧（例：【A学派认为...，而B机构指出...】），平等的将各个观点全面而完整的表达出来  
+          - 实用信息：工具/方法推荐（如适用）、常见误区、用户可能追问的衍生问题  
+          - 细节数据：补充细节数据，支持结论的信息和数据，不要只给出结论。  
+          - 数据利用深度：除了考虑数据准确性以外，需要深度挖掘数据价值、进行多维度分析以拓展内容。比如面对一份销售数据报告任务内容，要从不同产品类别、时间周期、地区等多个维度交叉分析，从而丰富报告深度与长度。
+
+          ### 第四步：处理不确定性与矛盾信息
+          - 若知识库中存在冲突或矛盾的信息，客观而详细的呈现不同观点，并明确指出差异。
+          - 仅呈现可验证的内容，避免使用推测性语言。
+
+          ## 报告输出格式要求
+          请严格按照以下Markdown格式要求输出报告内容，以确保报告的清晰性、准确性与易读性：
+          ### （一）结构化内容组织
+          - **段落清晰**：不同观点或主题之间必须分段清晰呈现。
+          - **标题层次明确**：使用Markdown标题符号（#、##、###、####）明确区分章节和子章节，最多使用到四级标题，不使用更深层级。
+
+          ### （二）Markdown语法使用指南
+          - **加粗和斜体**：用于强调关键词或重要概念。
+          - **表格格式**：对比性内容或结构化数据请尽量使用Markdown表格，确保信息清晰对齐，易于比较，同时提供详细的结论。
+          - **数学公式**：严禁放置于代码块内，必须使用Markdown支持的LaTeX格式正确展示。
+          - **代码块**：仅限于代码或需保持原格式内容，禁止放置数学公式
+          - **图表格式**：一些合适的内容（如流程、时序、排期使用甘特等）可以生成 mermaid 语法的图
+          - **格式要求**：不要使用 <a> 标签  
+        
+          ### （三）echarts 图表提取
+          - **强制输出图表**：当分析内容涉及页面中的 `b-echarts` 组件时，**必须**在报告对应位置输出 echarts 图表配置。
+          - **图表用途说明**：每图表下一行说明图表的名称（格式示例：（性别比例图）），居中对齐。
+          - **输出格式**：使用 markdown 代码块包裹 echarts 配置 JSON，语言标记必须为 `echarts`。
+            示例：
+            ```echarts
+            {
+              "title": { "text": "某某分布图" },
+              "xAxis": { ... },
+              "yAxis": { ... },
+              "series": [ ... ]
+            }
+            ```
+          - **配置生成规则**：
+            1. **提取数据**：从 `b-echarts` 组件的 `data` 中获取真实数据。
+            2. **构建配置**：参考 `script` 中的逻辑，将数据填充到 ECharts option 结构中。
+            3. **输出JSON**：输出最终渲染所需的完整 option JSON 对象（非 JS 代码，纯 JSON）。
+          - **样式优化**：
+            - 确保图表标题（title.text）清晰。
+            - 坐标轴标签（axisLabel）防止重叠（如使用 interval:0, rotate:30）。
+            - 启用 tooltip 以提升交互体验。
+            - 确保配色协调，数据展示醒目。  
+
+          ## 客观性与中立性特别提醒：
+          - 必须使用中性语言，避免任何主观意见或推测。
+          - 若知识库中存在多种相关观点，请客观呈现所有观点，不做任何倾向性表述。
+
+          ## 数据趋势的体现（可选）：
+          - 若知识中涉及数据趋势，可以适当体现数据随时间维度变化的趋势
+
+        # 页面数据：
+        {{page_schema}}
+
+        # 撰写要求：
+          1. 内容风格专业、客观、数据驱动。
+          2. 结合页面中的图表和指标数据进行分析，引用具体数字佐证观点。
+          3. 分析应包含现状描述、原因推测（基于数据趋势）、潜在风险提示或改进建议。
+          4. 输出格式为 Markdown。
+          5. 仅输出报告内容，不需要重复标题。
+
+    - name: dataset-result-explain
+      model: default
+      template: |
+        # 角色：资深数据分析师，擅长解读数据。
+        # 目标：根据数据结果，用自然语言进行总结和解释。
+
+        # 数据结果：
+        {{dataset_result}}
+        
+  examples:
+    - name: line-chart
+      description: 简单折线图
+      schema: |
+    - name: hr-overview
+      description: 人事基本情况总览
+      schema: |
+        {
+          "info": {
+            "name": "人事基本情况总览",
+            "description": "实时监控和分析教师人事关键指标"
+          },
+          "datasources": [],
+          "variables": [],
+          "items": [
+            {
+              "id": "page-container",
+              "type": "b-container",
+              "name": "页面主容器",
+              "description": "整体页面容器",
+              "props": { "htmlTag": "div", "classNames": ["container", "mx-auto", "px-4", "py-6"] },
+              "cascadeIds": [],
+              "children": [
+                {
+                  "id": "header-container",
+                  "type": "b-container",
+                  "name": "标题区容器",
+                  "description": "页面标题与描述",
+                  "props": { "htmlTag": "div", "classNames": ["mb-8"] },
+                  "cascadeIds": [],
+                  "children": [
+                    {
+                      "id": "header-title",
+                      "type": "b-text",
+                      "name": "页面标题",
+                      "description": "主标题",
+                      "props": { "text": "人事基本情况总览" },
+                      "cascadeIds": [],
+                      "children": []
+                    },
+                    {
+                      "id": "header-subtitle",
+                      "type": "b-text",
+                      "name": "页面描述",
+                      "description": "副标题",
+                      "props": { "text": "实时监控和分析教师人事关键指标" },
+                      "cascadeIds": [],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "kpi-grid",
+                  "type": "b-container",
+                  "name": "总体指标栅格",
+                  "description": "四项关键指标卡片",
+                  "props": { "htmlTag": "section", "classNames": ["grid", "grid-cols-1", "sm:grid-cols-2", "lg:grid-cols-4", "gap-4", "mb-8"] },
+                  "cascadeIds": [],
+                  "children": [
+                    {
+                      "id": "kpi-total-staff",
+                      "type": "b-container",
+                      "name": "教职工总人数卡片",
+                      "description": "展示总人数与性别民族概览",
+                      "props": { "htmlTag": "div", "classNames": ["bg-white", "rounded-xl", "shadow-card", "p-5", "card-transition", "hover:shadow-card-hover"] },
+                      "cascadeIds": [],
+                      "children": [
+                        {
+                          "id": "kpi-total-staff-label",
+                          "type": "b-text",
+                          "name": "指标标签",
+                          "description": "",
+                          "props": { "text": "教职工总人数" },
+                          "cascadeIds": [],
+                          "children": []
+                        },
+                        {
+                          "id": "kpi-total-staff-number",
+                          "type": "b-text",
+                          "name": "指标数值",
+                          "description": "",
+                          "props": { "text": "1,284" },
+                          "cascadeIds": [],
+                          "children": []
+                        },
+                        {
+                          "id": "kpi-total-staff-icon",
+                          "type": "b-icon",
+                          "name": "指标图标",
+                          "description": "",
+                          "props": { "type": "font-awesome", "icon": "fa-users", "classNames": ["w-10", "h-10", "rounded-lg", "bg-primary-light", "flex", "items-center", "justify-center", "text-primary"] },
+                          "cascadeIds": [],
+                          "children": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": "kpi-on-duty",
+                      "type": "b-container",
+                      "name": "编制与在岗状态卡片",
+                      "description": "展示当前在岗人数与编制构成",
+                      "props": { "htmlTag": "div", "classNames": ["bg-white", "rounded-xl", "shadow-card", "p-5", "card-transition", "hover:shadow-card-hover"] },
+                      "cascadeIds": [],
+                      "children": [
+                        {
+                          "id": "kpi-on-duty-label",
+                          "type": "b-text",
+                          "name": "指标标签",
+                          "description": "",
+                          "props": { "text": "编制与在岗状态" },
+                          "cascadeIds": [],
+                          "children": []
+                        },
+                        {
+                          "id": "kpi-on-duty-number",
+                          "type": "b-text",
+                          "name": "指标数值",
+                          "description": "",
+                          "props": { "text": "1,156" },
+                          "cascadeIds": [],
+                          "children": []
+                        },
+                        {
+                          "id": "kpi-on-duty-desc",
+                          "type": "b-text",
+                          "name": "指标描述",
+                          "description": "",
+                          "props": { "text": "当前在岗人数" },
+                          "cascadeIds": [],
+                          "children": []
+                        },
+                        {
+                          "id": "kpi-on-duty-icon",
+                          "type": "b-icon",
+                          "name": "指标图标",
+                          "description": "",
+                          "props": { "type": "font-awesome", "icon": "fa-briefcase", "classNames": ["w-10", "h-10", "rounded-lg", "bg-secondary-light", "flex", "items-center", "justify-center", "text-secondary"] },
+                          "cascadeIds": [],
+                          "children": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": "kpi-education",
+                      "type": "b-container",
+                      "name": "最高学历分布卡片",
+                      "description": "展示硕士及以上占比",
+                      "props": { "htmlTag": "div", "classNames": ["bg-white", "rounded-xl", "shadow-card", "p-5", "card-transition", "hover:shadow-card-hover"] },
+                      "cascadeIds": [],
+                      "children": [
+                        {
+                          "id": "kpi-education-label",
+                          "type": "b-text",
+                          "name": "指标标签",
+                          "description": "",
+                          "props": { "text": "最高学历分布" },
+                          "cascadeIds": [],
+                          "children": []
+                        },
+                        {
+                          "id": "kpi-education-number",
+                          "type": "b-text",
+                          "name": "指标数值",
+                          "description": "",
+                          "props": { "text": "42.3%" },
+                          "cascadeIds": [],
+                          "children": []
+                        },
+                        {
+                          "id": "kpi-education-desc",
+                          "type": "b-text",
+                          "name": "指标描述",
+                          "description": "",
+                          "props": { "text": "硕士及以上占比" },
+                          "cascadeIds": [],
+                          "children": []
+                        },
+                        {
+                          "id": "kpi-education-icon",
+                          "type": "b-icon",
+                          "name": "指标图标",
+                          "description": "",
+                          "props": { "type": "font-awesome", "icon": "fa-graduation-cap", "classNames": ["w-10", "h-10", "rounded-lg", "bg-tertiary-light", "flex", "items-center", "justify-center", "text-tertiary"] },
+                          "cascadeIds": [],
+                          "children": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": "kpi-title",
+                      "type": "b-container",
+                      "name": "职称级别分布卡片",
+                      "description": "展示高级以上占比",
+                      "props": { "htmlTag": "div", "classNames": ["bg-white", "rounded-xl", "shadow-card", "p-5", "card-transition", "hover:shadow-card-hover"] },
+                      "cascadeIds": [],
+                      "children": [
+                        {
+                          "id": "kpi-title-label",
+                          "type": "b-text",
+                          "name": "指标标签",
+                          "description": "",
+                          "props": { "text": "职称级别分布" },
+                          "cascadeIds": [],
+                          "children": []
+                        },
+                        {
+                          "id": "kpi-title-number",
+                          "type": "b-text",
+                          "name": "指标数值",
+                          "description": "",
+                          "props": { "text": "38.7%" },
+                          "cascadeIds": [],
+                          "children": []
+                        },
+                        {
+                          "id": "kpi-title-desc",
+                          "type": "b-text",
+                          "name": "指标描述",
+                          "description": "",
+                          "props": { "text": "高级以上占比" },
+                          "cascadeIds": [],
+                          "children": []
+                        },
+                        {
+                          "id": "kpi-title-icon",
+                          "type": "b-icon",
+                          "name": "指标图标",
+                          "description": "",
+                          "props": { "type": "font-awesome", "icon": "fa-trophy", "classNames": ["w-10", "h-10", "rounded-lg", "bg-blue-100", "flex", "items-center", "justify-center", "text-blue-600"] },
+                          "cascadeIds": [],
+                          "children": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "charts-top-grid",
+                  "type": "b-container",
+                  "name": "中部图表栅格",
+                  "description": "单位人员分布与性别比例",
+                  "props": { "htmlTag": "div", "classNames": ["grid", "grid-cols-1", "lg:grid-cols-3", "gap-6", "mb-8"] },
+                  "cascadeIds": [],
+                  "children": [
+                    {
+                      "id": "unit-distribution-container",
+                      "type": "b-container",
+                      "name": "单位人员分布容器",
+                      "description": "",
+                      "props": { "htmlTag": "div", "classNames": ["lg:col-span-2"] },
+                      "cascadeIds": [],
+                      "children": [
+                        {
+                          "id": "unit-distribution-title",
+                          "type": "b-text",
+                          "name": "单位人员分布标题",
+                          "description": "",
+                          "props": { "text": "单位人员分布" },
+                          "cascadeIds": [],
+                          "children": []
+                        },
+                        {
+                          "id": "unit-distribution-chart",
+                          "type": "b-echarts",
+                          "name": "单位人员分布柱状图",
+                          "description": "",
+                          "props": {
+                            "script": "return { tooltip: { trigger: 'axis' }, grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true }, xAxis: { type: 'category', data: data.map(i => i.name), axisLabel: { interval: 0, rotate: 30, fontSize: 12 } }, yAxis: { type: 'value', name: '人数' }, series: [{ type: 'bar', data: data.map(i => i.value) }] };"
+                          },
+                          "cascadeIds": [],
+                          "datasource": { "source": "custom", "custom": "[{\"name\":\"机电工程学院\",\"value\":215},{\"name\":\"计算机学院\",\"value\":189},{\"name\":\"商学院\",\"value\":156},{\"name\":\"人文学院\",\"value\":124},{\"name\":\"外国语学院\",\"value\":98},{\"name\":\"艺术学院\",\"value\":76},{\"name\":\"后勤保障部\",\"value\":145},{\"name\":\"教务处\",\"value\":87},{\"name\":\"科研处\",\"value\":63}]" },
+                          "children": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": "gender-ratio-container",
+                      "type": "b-container",
+                      "name": "性别比例容器",
+                      "description": "",
+                      "props": { "htmlTag": "div", "classNames": [] },
+                      "cascadeIds": [],
+                      "children": [
+                        {
+                          "id": "gender-ratio-title",
+                          "type": "b-text",
+                          "name": "性别比例标题",
+                          "description": "",
+                          "props": { "text": "性别比例" },
+                          "cascadeIds": [],
+                          "children": []
+                        },
+                        {
+                          "id": "gender-ratio-chart",
+                          "type": "b-echarts",
+                          "name": "性别比例饼图",
+                          "description": "",
+                          "props": {
+                            "script": "return { tooltip: { trigger: 'item' }, series: [{ name: '性别比例', type: 'pie', radius: ['40%', '70%'], avoidLabelOverlap: false, label: { show: false, position: 'center' }, labelLine: { show: false }, data: data.map(i => ({ name: i.name, value: i.value })) }] };"
+                          },
+                          "cascadeIds": [],
+                          "datasource": { "source": "custom", "custom": "[{\"name\":\"男性\",\"value\":756},{\"name\":\"女性\",\"value\":528}]" },
+                          "children": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "charts-mid-grid-1",
+                  "type": "b-container",
+                  "name": "下部图表区一",
+                  "description": "民族与最高学历分布",
+                  "props": { "htmlTag": "div", "classNames": ["grid", "grid-cols-1", "md:grid-cols-2", "gap-6", "mb-8"] },
+                  "cascadeIds": [],
+                  "children": [
+                    {
+                      "id": "ethnicity-title",
+                      "type": "b-text",
+                      "name": "民族分布标题",
+                      "description": "",
+                      "props": { "text": "民族分布" },
+                      "cascadeIds": [],
+                      "children": []
+                    },
+                    {
+                      "id": "ethnicity-chart",
+                      "type": "b-echarts",
+                      "name": "民族分布柱状图",
+                      "description": "",
+                      "props": {
+                        "script": "return { tooltip: { trigger: 'axis' }, grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true }, xAxis: { type: 'category', data: data.map(i => i.name) }, yAxis: { type: 'value', name: '人数' }, series: [{ type: 'bar', data: data.map(i => i.value) }] };"
+                      },
+                      "cascadeIds": [],
+                      "datasource": { "source": "custom", "custom": "[{\"name\":\"汉族\",\"value\":1192},{\"name\":\"回族\",\"value\":35},{\"name\":\"满族\",\"value\":28},{\"name\":\"壮族\",\"value\":12},{\"name\":\"维吾尔族\",\"value\":8},{\"name\":\"其他\",\"value\":9}]" },
+                      "children": []
+                    },
+                    {
+                      "id": "education-title",
+                      "type": "b-text",
+                      "name": "最高学历分布标题",
+                      "description": "",
+                      "props": { "text": "最高学历分布" },
+                      "cascadeIds": [],
+                      "children": []
+                    },
+                    {
+                      "id": "education-chart",
+                      "type": "b-echarts",
+                      "name": "最高学历分布柱状图",
+                      "description": "",
+                      "props": {
+                        "script": "return { tooltip: { trigger: 'axis' }, grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true }, xAxis: { type: 'category', data: data.map(i => i.name) }, yAxis: { type: 'value', name: '人数' }, series: [{ type: 'bar', data: data.map(i => i.value) }] };"
+                      },
+                      "cascadeIds": [],
+                      "datasource": { "source": "custom", "custom": "[{\"name\":\"博士研究生\",\"value\":215},{\"name\":\"硕士研究生\",\"value\":329},{\"name\":\"本科毕业\",\"value\":712},{\"name\":\"专科及以下\",\"value\":28}]" },
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "charts-mid-grid-2",
+                  "type": "b-container",
+                  "name": "下部图表区二",
+                  "description": "在岗状态与政治面貌分布",
+                  "props": { "htmlTag": "div", "classNames": ["grid", "grid-cols-1", "md:grid-cols-2", "gap-6", "mb-8"] },
+                  "cascadeIds": [],
+                  "children": [
+                    {
+                      "id": "employment-status-title",
+                      "type": "b-text",
+                      "name": "当前在岗状态标题",
+                      "description": "",
+                      "props": { "text": "当前在岗状态" },
+                      "cascadeIds": [],
+                      "children": []
+                    },
+                    {
+                      "id": "employment-status-chart",
+                      "type": "b-echarts",
+                      "name": "当前在岗状态饼图",
+                      "description": "",
+                      "props": {
+                        "script": "return { tooltip: { trigger: 'item' }, series: [{ name: '在岗状态', type: 'pie', radius: ['40%', '70%'], avoidLabelOverlap: false, label: { show: false, position: 'center' }, labelLine: { show: false }, data: data.map(i => ({ name: i.name, value: i.value })) }] };"
+                      },
+                      "cascadeIds": [],
+                      "datasource": { "source": "custom", "custom": "[{\"name\":\"在岗\",\"value\":1156},{\"name\":\"离退休\",\"value\":92},{\"name\":\"离职\",\"value\":18},{\"name\":\"调出\",\"value\":18}]" },
+                      "children": []
+                    },
+                    {
+                      "id": "political-status-title",
+                      "type": "b-text",
+                      "name": "政治面貌分布标题",
+                      "description": "",
+                      "props": { "text": "政治面貌分布" },
+                      "cascadeIds": [],
+                      "children": []
+                    },
+                    {
+                      "id": "political-status-chart",
+                      "type": "b-echarts",
+                      "name": "政治面貌分布柱状图",
+                      "description": "",
+                      "props": {
+                        "script": "return { tooltip: { trigger: 'axis' }, grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true }, xAxis: { type: 'category', data: data.map(i => i.name) }, yAxis: { type: 'value', name: '人数' }, series: [{ type: 'bar', data: data.map(i => i.value) }] };"
+                      },
+                      "cascadeIds": [],
+                      "datasource": { "source": "custom", "custom": "[{\"name\":\"中共党员\",\"value\":724},{\"name\":\"群众\",\"value\":456},{\"name\":\"共青团员\",\"value\":89},{\"name\":\"民主党派\",\"value\":15}]" },
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "charts-mid-grid-3",
+                  "type": "b-container",
+                  "name": "下部图表区三",
+                  "description": "职称级别、用人方式与岗位名称分布",
+                  "props": { "htmlTag": "div", "classNames": ["grid", "grid-cols-1", "md:grid-cols-3", "gap-6", "mb-8"] },
+                  "cascadeIds": [],
+                  "children": [
+                    {
+                      "id": "title-level-title",
+                      "type": "b-text",
+                      "name": "职称级别分布标题",
+                      "description": "",
+                      "props": { "text": "职称级别分布" },
+                      "cascadeIds": [],
+                      "children": []
+                    },
+                    {
+                      "id": "title-level-chart",
+                      "type": "b-echarts",
+                      "name": "职称级别分布柱状图",
+                      "description": "",
+                      "props": {
+                        "script": "return { tooltip: { trigger: 'axis' }, grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true }, xAxis: { type: 'category', data: data.map(i => i.name) }, yAxis: { type: 'value', name: '人数' }, series: [{ type: 'bar', data: data.map(i => i.value) }] };"
+                      },
+                      "cascadeIds": [],
+                      "datasource": { "source": "custom", "custom": "[{\"name\":\"正高级\",\"value\":142},{\"name\":\"副高级\",\"value\":355},{\"name\":\"中级\",\"value\":528},{\"name\":\"初级\",\"value\":215},{\"name\":\"员级\",\"value\":44}]" },
+                      "children": []
+                    },
+                    {
+                      "id": "employment-type-title",
+                      "type": "b-text",
+                      "name": "用人方式分布标题",
+                      "description": "",
+                      "props": { "text": "用人方式分布" },
+                      "cascadeIds": [],
+                      "children": []
+                    },
+                    {
+                      "id": "employment-type-chart",
+                      "type": "b-echarts",
+                      "name": "用人方式分布柱状图",
+                      "description": "",
+                      "props": {
+                        "script": "return { tooltip: { trigger: 'axis' }, grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true }, xAxis: { type: 'category', data: data.map(i => i.name) }, yAxis: { type: 'value', name: '人数' }, series: [{ type: 'bar', data: data.map(i => i.value) }] };"
+                      },
+                      "cascadeIds": [],
+                      "datasource": { "source": "custom", "custom": "[{\"name\":\"事业编制\",\"value\":924},{\"name\":\"学校聘用\",\"value\":232},{\"name\":\"外籍教师\",\"value\":18},{\"name\":\"返聘人员\",\"value\":110}]" },
+                      "children": []
+                    },
+                    {
+                      "id": "position-title",
+                      "type": "b-text",
+                      "name": "岗位名称分布标题",
+                      "description": "",
+                      "props": { "text": "岗位名称分布" },
+                      "cascadeIds": [],
+                      "children": []
+                    },
+                    {
+                      "id": "position-chart",
+                      "type": "b-echarts",
+                      "name": "岗位名称分布柱状图",
+                      "description": "",
+                      "props": {
+                        "script": "return { tooltip: { trigger: 'axis' }, grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true }, xAxis: { type: 'category', data: data.map(i => i.name), axisLabel: { rotate: 15 } }, yAxis: { type: 'value', name: '人数' }, series: [{ type: 'bar', data: data.map(i => i.value) }] };"
+                      },
+                      "cascadeIds": [],
+                      "datasource": { "source": "custom", "custom": "[{\"name\":\"专任教师\",\"value\":856},{\"name\":\"行政人员\",\"value\":215},{\"name\":\"双肩挑教师\",\"value\":124},{\"name\":\"教辅人员\",\"value\":68},{\"name\":\"工勤人员\",\"value\":21}]" },
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "charts-bottom-grid",
+                  "type": "b-container",
+                  "name": "考核情况图表区",
+                  "description": "考核结论与年度趋势",
+                  "props": { "htmlTag": "div", "classNames": ["grid", "grid-cols-1", "lg:grid-cols-2", "gap-6"] },
+                  "cascadeIds": [],
+                  "children": [
+                    {
+                      "id": "assessment-result-title",
+                      "type": "b-text",
+                      "name": "考核结论分布标题",
+                      "description": "",
+                      "props": { "text": "考核结论分布" },
+                      "cascadeIds": [],
+                      "children": []
+                    },
+                    {
+                      "id": "assessment-result-chart",
+                      "type": "b-echarts",
+                      "name": "考核结论分布饼图",
+                      "description": "",
+                      "props": {
+                        "script": "return { tooltip: { trigger: 'item' }, series: [{ name: '考核结论', type: 'pie', radius: ['40%', '70%'], avoidLabelOverlap: false, label: { show: false, position: 'center' }, labelLine: { show: false }, data: data.map(i => ({ name: i.name, value: i.value })) }] };"
+                      },
+                      "cascadeIds": [],
+                      "datasource": { "source": "custom", "custom": "[{\"name\":\"合格\",\"value\":985},{\"name\":\"优秀\",\"value\":187},{\"name\":\"称职\",\"value\":102},{\"name\":\"不合格\",\"value\":10}]" },
+                      "children": []
+                    },
+                    {
+                      "id": "assessment-trend-title",
+                      "type": "b-text",
+                      "name": "考核人数年度趋势标题",
+                      "description": "",
+                      "props": { "text": "考核人数年度趋势" },
+                      "cascadeIds": [],
+                      "children": []
+                    },
+                    {
+                      "id": "assessment-trend-chart",
+                      "type": "b-echarts",
+                      "name": "考核人数年度趋势折线图",
+                      "description": "",
+                      "props": {
+                        "script": "return { tooltip: { trigger: 'axis' }, legend: { data: ['考核人数'] }, grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true }, xAxis: { type: 'category', boundaryGap: false, data: data.map(i => i.name) }, yAxis: { type: 'value', name: '人数' }, series: [{ name: '考核人数', type: 'line', data: data.map(i => i.value), smooth: true }] };"
+                      },
+                      "cascadeIds": [],
+                      "datasource": { "source": "custom", "custom": "[{\"name\":\"2018\",\"value\":986},{\"name\":\"2019\",\"value\":1054},{\"name\":\"2020\",\"value\":1128},{\"name\":\"2021\",\"value\":1195},{\"name\":\"2022\",\"value\":1253},{\"name\":\"2023\",\"value\":1284}]" },
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
