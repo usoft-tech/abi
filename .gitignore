@@ -21,8 +21,6 @@ application-local.yaml
 
 pnpm-lock.yaml
 
-package-lock.json
-
 yarn.lock
 
 task_plan.md
