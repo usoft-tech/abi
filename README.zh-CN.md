@@ -177,6 +177,10 @@ npm run build
 - 通过环境变量或部署密钥配置 Redis、上传存储、文件访问地址、模型服务和模型 API Key。
 - 确认数据库初始化模式符合部署环境要求。
 
+## 商务合作
+
+商务合作请联系 qiwei@lzfsd.com。
+
 ## 开源协议
 
 ABI 使用 Apache License 2.0 开源协议。完整协议内容见 [LICENSE](./LICENSE)。
